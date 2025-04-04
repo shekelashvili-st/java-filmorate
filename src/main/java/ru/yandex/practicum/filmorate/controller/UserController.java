@@ -38,7 +38,6 @@ public class UserController {
         Long id = newUser.getId();
         if (id == null || !idToUser.containsKey(id)) {
             String message = "User with id=" + id + " not found";
-            log.warn(message);
             throw new IdNotFoundException(message);
         }
         idToUser.put(id, newUser);
