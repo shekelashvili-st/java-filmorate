@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
@@ -20,7 +22,8 @@ public class User {
     @Pattern(regexp = "^\\S*$", message = "User login must not contain whitespace")
     private String login;
 
-    private String name;
+    @JsonSetter(nulls = Nulls.SKIP)
+    private String name = "common";
 
     @Past(message = "User birthday must not be in the future")
     private LocalDate birthday;

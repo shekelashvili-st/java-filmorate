@@ -38,7 +38,6 @@ public class FilmController {
         Long id = newFilm.getId();
         if (id == null || !idToFilm.containsKey(id)) {
             String message = "Film with id=" + id + " not found";
-            log.warn(message);
             throw new IdNotFoundException(message);
         }
         idToFilm.put(id, newFilm);
