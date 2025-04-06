@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -25,7 +25,7 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film create(@RequestBody @Validated Film film) {
+    public Film create(@RequestBody @Valid Film film) {
         long id = getNextId();
         film.setId(id);
         idToFilm.put(id, film);
@@ -34,7 +34,7 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film update(@RequestBody @Validated Film newFilm) {
+    public Film update(@RequestBody @Valid Film newFilm) {
         Long id = newFilm.getId();
         if (id == null || !idToFilm.containsKey(id)) {
             String message = "Film with id=" + id + " not found";
