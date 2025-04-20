@@ -34,4 +34,28 @@ public class UserController {
         log.info("Request to update user with id {} received: {}", newUser.getId(), newUser);
         return userService.update(newUser);
     }
+
+    @PutMapping("/{userId}/friends/{friendId}")
+    public void addFriends(@PathVariable long userId, @PathVariable long friendId) {
+        log.info("Request to assign users with ids {} and {} as friends received", userId, friendId);
+        userService.addToFriends(userId, friendId);
+    }
+
+    @DeleteMapping("/{userId}/friends/{friendId}")
+    public void removeFriends(@PathVariable long userId, @PathVariable long friendId) {
+        log.info("Request to unassign users with ids {} and {} as friends received", userId, friendId);
+        userService.removeFromFriends(userId, friendId);
+    }
+
+    @GetMapping("/{userId}/friends")
+    public Collection<User> getFriends(@PathVariable long userId) {
+        log.info("Requested friend list of user with id = {}", userId);
+        return userService.getFriends(userId);
+    }
+
+    @GetMapping("/{userId}/friends/common/{friendId}")
+    public Collection<User> getCommonFriends(@PathVariable long userId, @PathVariable long friendId) {
+        log.info("Requested common friends of users with ids = {}, {}", userId, friendId);
+        return userService.getCommonFriends(userId, friendId);
+    }
 }

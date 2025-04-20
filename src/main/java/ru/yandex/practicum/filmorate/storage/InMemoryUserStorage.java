@@ -16,28 +16,45 @@ public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> idToUser = new HashMap<>();
 
     @Override
-    public void add(User user) {
+    public User add(User user) {
         idToUser.put(user.getId(), user);
+        return user;
     }
 
     @Override
-    public void update(User user) {
+    public User update(User user) {
         Long id = user.getId();
         if (id == null || !idToUser.containsKey(id)) {
             String message = "User with id=" + id + " not found";
             log.warn(message);
             throw new IdNotFoundException(message);
         }
-        idToUser.put(user.getId(), user);
+        // Assuming we don't update the friend list
+        User oldUser = idToUser.get(user.getId());
+        updateUserFields(oldUser, user);
+        return oldUser;
     }
 
     @Override
     public User getById(long id) {
-        return idToUser.get(id);
+        User user = idToUser.get(id);
+        if (user == null) {
+            String message = "User with id=" + id + " not found";
+            log.warn(message);
+            throw new IdNotFoundException(message);
+        }
+        return user;
     }
 
     @Override
     public Collection<User> getAll() {
         return idToUser.values();
+    }
+
+    private void updateUserFields(User oldUser, User user) {
+        oldUser.setName(user.getName());
+        oldUser.setLogin(user.getLogin());
+        oldUser.setBirthday(user.getBirthday());
+        oldUser.setEmail(user.getEmail());
     }
 }
