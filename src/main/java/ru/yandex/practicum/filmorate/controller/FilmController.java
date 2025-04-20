@@ -1,51 +1,36 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/films")
 public class FilmController {
-    private final Map<Long, Film> idToFilm = new HashMap<>();
-    private long nextId = 0L;
+    private final FilmService filmService;
 
     @GetMapping
     public Collection<Film> getAll() {
         log.info("Film list requested");
-        return new ArrayList<>(idToFilm.values());
+        return filmService.getAll();
     }
 
     @PostMapping
     public Film create(@RequestBody @Valid Film film) {
-        long id = getNextId();
-        film.setId(id);
-        idToFilm.put(id, film);
-        log.info("Added new film successfully: {}", film);
-        return film;
+        log.info("Request to add film received: {}", film);
+        return filmService.create(film);
     }
 
     @PutMapping
     public Film update(@RequestBody @Valid Film newFilm) {
-        Long id = newFilm.getId();
-        if (id == null || !idToFilm.containsKey(id)) {
-            String message = "Film with id=" + id + " not found";
-            throw new IdNotFoundException(message);
-        }
-        idToFilm.put(id, newFilm);
-        log.info("Updated film with id {} successfully: {}", id, newFilm);
-        return newFilm;
-    }
-
-    private long getNextId() {
-        return ++nextId;
+        log.info("Request to update film with id {} received: {}", newFilm.getId(), newFilm);
+        return filmService.update(newFilm);
     }
 }
