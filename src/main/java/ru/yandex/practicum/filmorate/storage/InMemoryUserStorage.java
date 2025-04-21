@@ -30,7 +30,7 @@ public class InMemoryUserStorage implements UserStorage {
             throw new IdNotFoundException(message);
         }
         // Assuming we don't update the friend list
-        User oldUser = idToUser.get(user.getId());
+        User oldUser = idToUser.get(id);
         updateUserFields(oldUser, user);
         return oldUser;
     }

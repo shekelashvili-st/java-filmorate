@@ -45,9 +45,11 @@ public class UserService {
     public void removeFromFriends(long id1, long id2) {
         User user1 = storage.getById(id1);
         User user2 = storage.getById(id2);
-        user1.getFriends().remove(id2);
-        user2.getFriends().remove(id1);
-        log.info("Unassigned users {} and {} as friends successfully", user1, user2);
+        boolean user2WasUser1Friend = user1.getFriends().remove(id2);
+        boolean user1WasUser2Friend = user2.getFriends().remove(id1);
+        log.debug("User {} was friends with {} before removal: {}", user2, user1, user2WasUser1Friend);
+        log.debug("User {} was friends with {} before removal: {}", user1, user2, user1WasUser2Friend);
+        log.info("Assigned users {} and {} as non-friends successfully", user1, user2);
     }
 
     public Collection<User> getFriends(long id) {

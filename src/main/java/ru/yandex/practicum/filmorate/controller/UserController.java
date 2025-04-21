@@ -17,7 +17,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping()
+    @GetMapping
     public Collection<User> getAll() {
         log.info("User list requested");
         return userService.getAll();
