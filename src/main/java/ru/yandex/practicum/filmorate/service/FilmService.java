@@ -25,6 +25,10 @@ public class FilmService {
         return storage.getAll();
     }
 
+    public Film getById(long id) {
+        return storage.getById(id);
+    }
+
     public Film create(Film film) {
         long id = getNextId();
         film.setId(id);

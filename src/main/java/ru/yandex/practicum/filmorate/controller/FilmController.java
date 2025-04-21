@@ -24,6 +24,12 @@ public class FilmController {
         return filmService.getAll();
     }
 
+    @GetMapping("/{id}")
+    public Film getById(@RequestParam long id) {
+        log.info("Request to get film with id {} received", id);
+        return filmService.getById(id);
+    }
+
     @PostMapping
     public Film create(@RequestBody @Valid Film film) {
         log.info("Request to add film received: {}", film);

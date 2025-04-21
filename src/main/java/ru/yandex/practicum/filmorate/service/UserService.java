@@ -20,6 +20,10 @@ public class UserService {
         return storage.getAll();
     }
 
+    public User getById(long id) {
+        return storage.getById(id);
+    }
+
     public User create(User user) {
         long id = getNextId();
         user.setId(id);

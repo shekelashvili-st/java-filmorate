@@ -23,6 +23,12 @@ public class UserController {
         return userService.getAll();
     }
 
+    @GetMapping("/{id}")
+    public User getById(@RequestParam long id) {
+        log.info("Request to get user with id {} received", id);
+        return userService.getById(id);
+    }
+
     @PostMapping
     public User create(@RequestBody @Valid User user) {
         log.info("Request to add user received: {}", user);
