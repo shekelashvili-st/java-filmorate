@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +10,8 @@ import org.hibernate.validator.constraints.Length;
 import ru.yandex.practicum.filmorate.validator.DateAfter;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class Film {
@@ -27,4 +30,7 @@ public class Film {
 
     @Min(value = 0, message = "Film duration must be positive")
     private int duration;
+
+    @JsonIgnore
+    private Set<Long> likes = new HashSet<>();
 }

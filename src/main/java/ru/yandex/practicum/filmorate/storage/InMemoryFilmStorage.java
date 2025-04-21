@@ -16,28 +16,45 @@ public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Long, Film> idToFilm = new HashMap<>();
 
     @Override
-    public void add(Film film) {
+    public Film add(Film film) {
         idToFilm.put(film.getId(), film);
+        return film;
     }
 
     @Override
-    public void update(Film film) {
+    public Film update(Film film) {
         Long id = film.getId();
         if (id == null || !idToFilm.containsKey(id)) {
             String message = "Film with id=" + id + " not found";
             log.warn(message);
             throw new IdNotFoundException(message);
         }
-        idToFilm.put(id, film);
+        // Assuming we don't update the likes
+        Film oldFilm = idToFilm.get(id);
+        updateFilmFields(oldFilm, film);
+        return oldFilm;
     }
 
     @Override
     public Film getById(long id) {
-        return idToFilm.get(id);
+        Film film = idToFilm.get(id);
+        if (film == null) {
+            String message = "Film with id=" + id + " not found";
+            log.warn(message);
+            throw new IdNotFoundException(message);
+        }
+        return film;
     }
 
     @Override
     public Collection<Film> getAll() {
         return idToFilm.values();
+    }
+
+    private void updateFilmFields(Film oldFilm, Film film) {
+        oldFilm.setName(film.getName());
+        oldFilm.setDescription(film.getDescription());
+        oldFilm.setReleaseDate(film.getReleaseDate());
+        oldFilm.setDuration(film.getDuration());
     }
 }
