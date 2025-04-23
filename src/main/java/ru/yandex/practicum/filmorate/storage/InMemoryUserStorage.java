@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -10,13 +10,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@Component
+@Repository
 public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Long, User> idToUser = new HashMap<>();
+    private long nextId = 0L;
 
     @Override
     public User add(User user) {
+        long id = getNextId();
+        user.setId(id);
         idToUser.put(user.getId(), user);
         return user;
     }
@@ -56,5 +59,9 @@ public class InMemoryUserStorage implements UserStorage {
         oldUser.setLogin(user.getLogin());
         oldUser.setBirthday(user.getBirthday());
         oldUser.setEmail(user.getEmail());
+    }
+
+    private long getNextId() {
+        return ++nextId;
     }
 }

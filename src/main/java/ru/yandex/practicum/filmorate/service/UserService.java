@@ -14,7 +14,6 @@ import java.util.Set;
 @Service
 public class UserService {
     private final UserStorage storage;
-    private long nextId = 0L;
 
     public Collection<User> getAll() {
         return storage.getAll();
@@ -25,8 +24,6 @@ public class UserService {
     }
 
     public User create(User user) {
-        long id = getNextId();
-        user.setId(id);
         User newUser = storage.add(user);
         log.info("Added new user successfully: {}", newUser);
         return newUser;
@@ -71,9 +68,5 @@ public class UserService {
                 .filter(user1Friends::contains)
                 .map(storage::getById)
                 .toList();
-    }
-
-    private long getNextId() {
-        return ++nextId;
     }
 }

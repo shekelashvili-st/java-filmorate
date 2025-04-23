@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -10,13 +10,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@Component
+@Repository
 public class InMemoryFilmStorage implements FilmStorage {
 
     private final Map<Long, Film> idToFilm = new HashMap<>();
+    private long nextId = 0L;
 
     @Override
     public Film add(Film film) {
+        long id = getNextId();
+        film.setId(id);
         idToFilm.put(film.getId(), film);
         return film;
     }
@@ -56,5 +59,9 @@ public class InMemoryFilmStorage implements FilmStorage {
         oldFilm.setDescription(film.getDescription());
         oldFilm.setReleaseDate(film.getReleaseDate());
         oldFilm.setDuration(film.getDuration());
+    }
+
+    private long getNextId() {
+        return ++nextId;
     }
 }

@@ -19,7 +19,6 @@ import java.util.Set;
 public class FilmService {
     private final FilmStorage storage;
     private final UserStorage userStorage;
-    private long nextId = 0L;
 
     public Collection<Film> getAll() {
         return storage.getAll();
@@ -30,8 +29,6 @@ public class FilmService {
     }
 
     public Film create(Film film) {
-        long id = getNextId();
-        film.setId(id);
         Film newFilm = storage.add(film);
         log.info("Added new film successfully: {}", newFilm);
         return newFilm;
@@ -67,9 +64,5 @@ public class FilmService {
                 .sorted(Comparator.comparingInt((Film film) -> film.getLikes().size()).reversed())
                 .limit(maxSize)
                 .toList();
-    }
-
-    private long getNextId() {
-        return ++nextId;
     }
 }
