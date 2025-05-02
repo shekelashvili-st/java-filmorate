@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
@@ -8,6 +9,8 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class User {
@@ -25,6 +28,9 @@ public class User {
 
     @Past(message = "User birthday must not be in the future")
     private LocalDate birthday;
+
+    @JsonIgnore
+    private Set<Long> friends = new HashSet<>();
 
     @JsonCreator
     public User(Long id, String email, String login, String name, LocalDate birthday) {
