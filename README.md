@@ -1,2 +1,3 @@
 # java-filmorate
-Template repository for Filmorate project.
+Database ER diagram:
+![](ER-diagram.svg "ER diagram")
