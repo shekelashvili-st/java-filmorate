@@ -10,6 +10,7 @@ import org.hibernate.validator.constraints.Length;
 import ru.yandex.practicum.filmorate.validator.DateAfter;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,4 +34,8 @@ public class Film {
 
     @JsonIgnore
     private Set<Long> likes = new HashSet<>();
+
+    private Collection<FilmGenre> genre;
+
+    private FilmRating rating;
 }
