@@ -31,9 +31,9 @@ SELECT f.id,
     r.rating,
     ARRAY_AGG(g.name) 
 FROM film AS f
-INNER JOIN rating as r ON f.rating_id = r.id
-LEFT OUTER JOIN film_genres as fg ON f.id=fg.film_id
-INNER JOIN genre AS g on fg.genre_id=g.id
+INNER JOIN rating AS r ON f.rating_id = r.id
+LEFT OUTER JOIN film_genres AS fg ON f.id=fg.film_id
+INNER JOIN genre AS g ON fg.genre_id=g.id
 GROUP BY f.id
 WHERE f.id=some_id;
 ```
@@ -48,13 +48,13 @@ SELECT f.id,
     r.rating,
     ARRAY_AGG(g.name) 
 FROM film AS f
-INNER JOIN rating as r ON f.rating_id = r.id
-LEFT OUTER JOIN film_genres as fg ON f.id=fg.film_id
-INNER JOIN genre AS g on fg.genre_id=g.id
+INNER JOIN rating AS r ON f.rating_id = r.id
+LEFT OUTER JOIN film_genres AS fg ON f.id=fg.film_id
+INNER JOIN genre AS g ON fg.genre_id=g.id
 GROUP BY f.id
 WHERE f.id IN (SELECT film_id
              FROM likes
              GROUP BY film_id
-             ORDER By COUNT(user_id) DESC
+             ORDER BY COUNT(user_id) DESC
              LIMIT N);
 ```
