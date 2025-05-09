@@ -14,7 +14,7 @@ import java.util.Collection;
 @Slf4j
 @Repository
 @Qualifier("H2UserStorage")
-public class UserDbStorage extends BaseDbStorage<User> implements UserStorage {
+public class DbUserStorage extends BaseDbStorage<User> {
     private static final String FIND_ALL_QUERY = "SELECT * FROM users";
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM users WHERE id = ?";
     private static final String INSERT_QUERY = "INSERT INTO users(email, login, name, birthday) " +
@@ -22,7 +22,7 @@ public class UserDbStorage extends BaseDbStorage<User> implements UserStorage {
     private static final String UPDATE_QUERY = "UPDATE users SET email = ?, login = ?, name = ?, birthday = ? WHERE id = ?";
 
     @Autowired
-    public UserDbStorage(JdbcTemplate jdbcTemplate, UserMapper mapper) {
+    public DbUserStorage(JdbcTemplate jdbcTemplate, UserMapper mapper) {
         super(jdbcTemplate, mapper);
     }
 

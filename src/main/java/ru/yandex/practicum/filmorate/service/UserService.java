@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.BaseStorage;
 
 import java.util.Collection;
 import java.util.Set;
@@ -14,10 +14,10 @@ import java.util.Set;
 @Service
 public class UserService {
 
-    private final UserStorage storage;
+    private final BaseStorage<User> storage;
 
     @Autowired
-    public UserService(@Qualifier("H2UserStorage") UserStorage storage) {
+    public UserService(@Qualifier("H2UserStorage") BaseStorage<User> storage) {
         this.storage = storage;
     }
 

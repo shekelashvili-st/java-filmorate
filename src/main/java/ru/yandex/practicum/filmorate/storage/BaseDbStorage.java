@@ -14,7 +14,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
-public abstract class BaseDbStorage<T> {
+public abstract class BaseDbStorage<T> implements BaseStorage<T> {
     protected final JdbcTemplate jdbcTemplate;
     protected final RowMapper<T> mapper;
 
