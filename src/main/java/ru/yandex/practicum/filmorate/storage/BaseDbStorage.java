@@ -40,8 +40,8 @@ public abstract class BaseDbStorage<T> implements BaseStorage<T> {
         }
     }
 
-    public boolean delete(String query, long id) {
-        int rowsDeleted = jdbcTemplate.update(query, id);
+    public boolean delete(String query, Object... params) {
+        int rowsDeleted = jdbcTemplate.update(query, params);
         return rowsDeleted > 0;
     }
 

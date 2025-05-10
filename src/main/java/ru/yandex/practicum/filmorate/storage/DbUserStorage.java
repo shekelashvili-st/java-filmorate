@@ -10,13 +10,15 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.mapper.UserMapper;
 
 import java.util.Collection;
+import java.util.Collections;
 
 @Slf4j
 @Repository
 @Qualifier("H2UserStorage")
-public class DbUserStorage extends BaseDbStorage<User> {
+public class DbUserStorage extends BaseDbStorage<User> implements UserStorage {
     private static final String FIND_ALL_QUERY = "SELECT * FROM users";
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM users WHERE id = ?";
+    private static final String FIND_LIST_QUERY = "SELECT * FROM users WHERE id IN (%s)";
     private static final String INSERT_QUERY = "INSERT INTO users(email, login, name, birthday) " +
             "VALUES (?, ?, ?, ?)";
     private static final String UPDATE_QUERY = "UPDATE users SET email = ?, login = ?, name = ?, birthday = ? WHERE id = ?";
@@ -53,5 +55,11 @@ public class DbUserStorage extends BaseDbStorage<User> {
     @Override
     public Collection<User> getAll() {
         return findMany(FIND_ALL_QUERY);
+    }
+
+    @Override
+    public Collection<User> getUserListByIds(Collection<Long> ids) {
+        String inSql = String.join(",", Collections.nCopies(ids.size(), "?"));
+        return findMany(FIND_LIST_QUERY.formatted(inSql), ids.toArray());
     }
 }
