@@ -45,6 +45,7 @@ public class DbFriendshipStorage extends BaseDbStorage<Friendship> implements Fr
         return friendship;
     }
 
+    @Override
     public boolean deleteByFriendsId(long id1, long id2) {
         return super.delete(DELETE_QUERY, id1, id2);
     }

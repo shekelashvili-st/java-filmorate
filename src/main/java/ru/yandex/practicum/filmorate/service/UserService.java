@@ -41,23 +41,33 @@ public class UserService {
     }
 
     public User update(User updatedUser) {
+        // Getting users also serves as existence check
+        userStorage.getById(updatedUser.getId());
         User userInStorage = userStorage.update(updatedUser);
         log.info("Updated user with id {} successfully: {}", userInStorage.getId(), userInStorage);
         return userInStorage;
     }
 
     public void addToFriends(long id1, long id2) {
+        // Getting users also serves as existence check
+        userStorage.getById(id1);
+        userStorage.getById(id2);
         friendshipStorage.add(new Friendship(null, id1, id2));
         log.info("Assigned users with ids {} and {} as friends successfully", id1, id2);
     }
 
     public void removeFromFriends(long id1, long id2) {
+        // Getting users also serves as existence check
+        User user1 = userStorage.getById(id1);
+        User user2 = userStorage.getById(id2);
         boolean existed = friendshipStorage.deleteByFriendsId(id1, id2);
-        log.debug("User {} was friends with {} before removal: {}", id2, id1, existed);
+        log.debug("User {} was friends with {} before removal: {}", user2, user1, existed);
         log.info("Assigned users with ids {} and {} as non-friends successfully", id1, id2);
     }
 
     public Collection<User> getFriends(long id) {
+        // Getting users also serves as existence check
+        userStorage.getById(id);
         Collection<Long> friendIds = friendshipStorage.getFriendIds(id);
         return friendIds.isEmpty() ? List.of() : userStorage.getUserListByIds(friendIds);
     }
