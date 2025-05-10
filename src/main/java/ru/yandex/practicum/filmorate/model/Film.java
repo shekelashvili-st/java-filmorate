@@ -32,9 +32,6 @@ public class Film {
     @Min(value = 0, message = "Film duration must be positive")
     private int duration;
 
-    @JsonIgnore
-    private Set<Long> likes = new HashSet<>();
-
     private Collection<Long> genre_ids;
 
     private Long rating_id;

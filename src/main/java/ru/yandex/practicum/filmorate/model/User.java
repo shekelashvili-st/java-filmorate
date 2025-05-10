@@ -28,10 +28,7 @@ public class User {
 
     @Past(message = "User birthday must not be in the future")
     private LocalDate birthday;
-
-    @JsonIgnore
-    private Set<Long> friends = new HashSet<>();
-
+    
     @JsonCreator
     public User(Long id, String email, String login, String name, LocalDate birthday) {
         this.id = id;
