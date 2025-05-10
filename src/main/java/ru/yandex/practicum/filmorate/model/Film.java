@@ -35,7 +35,7 @@ public class Film {
     @JsonIgnore
     private Set<Long> likes = new HashSet<>();
 
-    private Collection<FilmGenre> genre;
+    private Collection<Long> genre_ids;
 
-    private FilmRating rating;
+    private Long rating_id;
 }
