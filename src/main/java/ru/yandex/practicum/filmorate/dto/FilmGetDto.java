@@ -3,19 +3,19 @@ package ru.yandex.practicum.filmorate.dto;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Rating;
 import ru.yandex.practicum.filmorate.validator.DateAfter;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
-public class FilmDto {
+public class FilmGetDto {
 
     private Long id;
 
@@ -32,18 +32,7 @@ public class FilmDto {
     @Min(value = 0, message = "Film duration must be positive")
     private int duration;
 
-    private IdContainer mpa;
+    private Rating mpa;
 
-    // Пришлось изменить Set на List, чтобы проходились тесты. Они ожидают id в "правильном" порядке
-    // В базе данных (класс Film) используется Set
-    private List<@NotNull IdContainer> genres;
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class IdContainer {
-        @NotNull(message = "MPA and genre ids must not be null")
-        @Min(value = 0, message = "MPA and genre ids must be positive")
-        private Long id;
-    }
+    private Set<@NotNull Genre> genres;
 }

@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.FilmDto;
+import ru.yandex.practicum.filmorate.dto.FilmGetDto;
 import ru.yandex.practicum.filmorate.mapper.FilmDtoMapper;
+import ru.yandex.practicum.filmorate.mapper.FilmGetDtoMapper;
 import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.BaseStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -37,12 +39,16 @@ public class FilmService {
         this.likeStorage = likeStorage;
     }
 
-    public Collection<FilmDto> getAll() {
-        return filmStorage.getAll().stream().map(FilmDtoMapper::mapToFilmDto).toList();
+    public Collection<FilmGetDto> getAll() {
+        Collection<Genre> genres = genreStorage.getAll();
+        Collection<Rating> ratings = ratingStorage.getAll();
+        return filmStorage.getAll().stream().map(film -> FilmGetDtoMapper.mapToFilmGetDto(film, genres, ratings))
+                .toList();
     }
 
-    public FilmDto getById(long id) {
-        return FilmDtoMapper.mapToFilmDto(filmStorage.getById(id));
+    public FilmGetDto getById(long id) {
+        return FilmGetDtoMapper.mapToFilmGetDto(filmStorage.getById(id),
+                genreStorage.getAll(), ratingStorage.getAll());
     }
 
     public FilmDto create(FilmDto filmDto) {
@@ -86,8 +92,12 @@ public class FilmService {
         log.info("Removed like from user {} on film {} successfully", user, film);
     }
 
-    public List<FilmDto> getMostLiked(long maxSize) {
+    public List<FilmGetDto> getMostLiked(long maxSize) {
         List<Film> films = filmStorage.getMostPopular(maxSize);
-        return films.stream().map(FilmDtoMapper::mapToFilmDto).toList();
+        Collection<Genre> genres = genreStorage.getAll();
+        Collection<Rating> ratings = ratingStorage.getAll();
+        return films.stream()
+                .map(film -> FilmGetDtoMapper.mapToFilmGetDto(film, genres, ratings))
+                .toList();
     }
 }

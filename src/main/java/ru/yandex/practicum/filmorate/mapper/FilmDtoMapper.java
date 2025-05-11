@@ -4,13 +4,14 @@ package ru.yandex.practicum.filmorate.mapper;
 import ru.yandex.practicum.filmorate.dto.FilmDto;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class FilmDtoMapper {
     public static FilmDto mapToFilmDto(Film film) {
-        Set<FilmDto.IdContainer> genres = new HashSet<>();
+        List<FilmDto.IdContainer> genres = new ArrayList<>();
         Long ratingId = film.getRatingId();
         for (Long genreId : film.getGenreIds()) {
             genres.add(new FilmDto.IdContainer(genreId));
@@ -28,7 +29,7 @@ public class FilmDtoMapper {
     }
 
     public static Film mapToFilm(FilmDto filmDto) {
-        Set<FilmDto.IdContainer> genres = filmDto.getGenres();
+        List<FilmDto.IdContainer> genres = filmDto.getGenres();
         FilmDto.IdContainer rating = filmDto.getMpa();
         return Film.builder()
                 .id(filmDto.getId())
