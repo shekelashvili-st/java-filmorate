@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 
 public class FilmDtoMapper {
     public static FilmDto mapToFilmDto(Film film) {
-        Set<FilmDto.idContainer> genres = new HashSet<>();
+        Set<FilmDto.IdContainer> genres = new HashSet<>();
         Long ratingId = film.getRatingId();
         for (Long genreId : film.getGenreIds()) {
-            genres.add(new FilmDto.idContainer(genreId));
+            genres.add(new FilmDto.IdContainer(genreId));
         }
 
         return FilmDto.builder()
@@ -23,13 +23,13 @@ public class FilmDtoMapper {
                 .releaseDate(film.getReleaseDate())
                 .duration(film.getDuration())
                 .genres(genres)
-                .mpa(ratingId == null ? null : new FilmDto.idContainer(ratingId))
+                .mpa(ratingId == null ? null : new FilmDto.IdContainer(ratingId))
                 .build();
     }
 
     public static Film mapToFilm(FilmDto filmDto) {
-        Set<FilmDto.idContainer> genres = filmDto.getGenres();
-        FilmDto.idContainer rating = filmDto.getMpa();
+        Set<FilmDto.IdContainer> genres = filmDto.getGenres();
+        FilmDto.IdContainer rating = filmDto.getMpa();
         return Film.builder()
                 .id(filmDto.getId())
                 .name(filmDto.getName())
@@ -38,7 +38,7 @@ public class FilmDtoMapper {
                 .duration(filmDto.getDuration())
                 .ratingId(rating == null ? null : rating.getId())
                 .genreIds(genres == null ? new HashSet<>() : genres.stream()
-                        .map(FilmDto.idContainer::getId)
+                        .map(FilmDto.IdContainer::getId)
                         .collect(Collectors.toSet()))
                 .build();
     }
