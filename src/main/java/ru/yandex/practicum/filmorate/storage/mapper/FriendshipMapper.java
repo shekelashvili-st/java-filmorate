@@ -12,9 +12,9 @@ public class FriendshipMapper implements RowMapper<Friendship> {
     @Override
     public Friendship mapRow(ResultSet rs, int rowNum) throws SQLException {
         long id = rs.getLong("id");
-        long friend1_id = rs.getLong("friend1_id");
-        long friend2_id = rs.getLong("friend2_id");
+        long friend1Id = rs.getLong("friend1_id");
+        long friend2Id = rs.getLong("friend2_id");
 
-        return new Friendship(id, friend1_id, friend2_id);
+        return new Friendship(id, friend1Id, friend2Id);
     }
 }

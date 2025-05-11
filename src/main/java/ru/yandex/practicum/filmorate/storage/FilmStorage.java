@@ -8,5 +8,5 @@ import java.util.List;
 public interface FilmStorage extends BaseStorage<Film> {
     List<Film> getFilmListByIds(Collection<Long> ids);
 
-    List<Film> getMostPopular(long N);
+    List<Film> getMostPopular(long count);
 }
