@@ -6,14 +6,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.FilmDto;
 import ru.yandex.practicum.filmorate.mapper.FilmDtoMapper;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Rating;
+import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.BaseStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.LikeStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -22,16 +22,19 @@ public class FilmService {
     private final UserStorage userStorage;
     private final BaseStorage<Rating> ratingStorage;
     private final BaseStorage<Genre> genreStorage;
+    private final LikeStorage likeStorage;
 
     @Autowired
     public FilmService(@Qualifier("H2FilmStorage") FilmStorage filmStorage,
                        @Qualifier("H2UserStorage") UserStorage userStorage,
                        @Qualifier("H2RatingStorage") BaseStorage<Rating> ratingStorage,
-                       @Qualifier("H2GenreStorage") BaseStorage<Genre> genreStorage) {
+                       @Qualifier("H2GenreStorage") BaseStorage<Genre> genreStorage,
+                       @Qualifier("H2LikeStorage") LikeStorage likeStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
         this.ratingStorage = ratingStorage;
         this.genreStorage = genreStorage;
+        this.likeStorage = likeStorage;
     }
 
     public Collection<FilmDto> getAll() {
@@ -66,29 +69,25 @@ public class FilmService {
         return updatedFilm;
     }
 
-//    public void addLike(long filmId, long userId) {
-//        Film film = filmStorage.getById(filmId);
-//        // Also used to check for user existence
-//        User user = userStorage.getById(userId);
-//        Set<Long> likes = film.getLikes();
-//        likes.add(userId);
-//        log.info("Added like from user {} on film {} successfully", user, film);
-//    }
-//
-//    public void removeLike(long filmId, long userId) {
-//        Film film = filmStorage.getById(filmId);
-//        // Also used to check for user existence
-//        User user = userStorage.getById(userId);
-//        Set<Long> likes = film.getLikes();
-//        boolean hadLikeFromUser = likes.remove(userId);
-//        log.debug("Film {} had like from user {} before removal: {}", film, user, hadLikeFromUser);
-//        log.info("Removed like from user {} on film {} successfully", user, film);
-//    }
-//
-//    public List<Film> getMostLiked(long maxSize) {
-//        return filmStorage.getAll().stream()
-//                .sorted(Comparator.comparingInt((Film film) -> film.getLikes().size()).reversed())
-//                .limit(maxSize)
-//                .toList();
-//    }
+    public void addLike(long filmId, long userId) {
+        // Also used to check for existence
+        Film film = filmStorage.getById(filmId);
+        User user = userStorage.getById(userId);
+        likeStorage.add(new Like(null, filmId, userId));
+        log.info("Added like from user {} on film {} successfully", user, film);
+    }
+
+    public void removeLike(long filmId, long userId) {
+        // Also used to check for user existence
+        Film film = filmStorage.getById(filmId);
+        User user = userStorage.getById(userId);
+        boolean hadLikeFromUser = likeStorage.deleteByUserId(filmId, userId);
+        log.debug("Film {} had like from user {} before removal: {}", film, user, hadLikeFromUser);
+        log.info("Removed like from user {} on film {} successfully", user, film);
+    }
+
+    public List<FilmDto> getMostLiked(long maxSize) {
+        List<Film> films = filmStorage.getMostPopular(maxSize);
+        return films.stream().map(FilmDtoMapper::mapToFilmDto).toList();
+    }
 }

@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Friendship {
+public class Like {
     private Long id;
-    private Long friend1Id;
-    private Long friend2Id;
+    private Long filmId;
+    private Long userId;
 }

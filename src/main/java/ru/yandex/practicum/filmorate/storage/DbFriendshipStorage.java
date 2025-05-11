@@ -34,14 +34,14 @@ public class DbFriendshipStorage extends BaseDbStorage<Friendship> implements Fr
 
     @Override
     public Friendship add(Friendship friendship) {
-        long id = insert(INSERT_QUERY, friendship.getFriend1_id(), friendship.getFriend2_id());
+        long id = insert(INSERT_QUERY, friendship.getFriend1Id(), friendship.getFriend2Id());
         friendship.setId(id);
         return friendship;
     }
 
     @Override
     public Friendship update(Friendship friendship) {
-        update(UPDATE_QUERY, friendship.getFriend1_id(), friendship.getFriend2_id(), friendship.getId());
+        update(UPDATE_QUERY, friendship.getFriend1Id(), friendship.getFriend2Id(), friendship.getId());
         return friendship;
     }
 
@@ -53,13 +53,13 @@ public class DbFriendshipStorage extends BaseDbStorage<Friendship> implements Fr
     @Override
     public Collection<Long> getFriendIds(long id) {
         Collection<Friendship> friendships = findMany(FIND_FRIENDS_QUERY, id);
-        return friendships.stream().map(Friendship::getFriend2_id).toList();
+        return friendships.stream().map(Friendship::getFriend2Id).toList();
     }
 
     @Override
     public Collection<Long> getCommonFriendIds(long id1, long id2) {
         Collection<Friendship> friendships = findMany(FIND_COMMON_FRIENDS_QUERY, id1, id2);
-        return friendships.stream().map(Friendship::getFriend2_id).toList();
+        return friendships.stream().map(Friendship::getFriend2Id).toList();
     }
 
     @Override
