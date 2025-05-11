@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.storage.mapper.UserMapper;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Slf4j
 @Repository
@@ -58,7 +59,7 @@ public class DbUserStorage extends BaseDbStorage<User> implements UserStorage {
     }
 
     @Override
-    public Collection<User> getUserListByIds(Collection<Long> ids) {
+    public List<User> getUserListByIds(Collection<Long> ids) {
         String inSql = String.join(",", Collections.nCopies(ids.size(), "?"));
         return findMany(FIND_LIST_QUERY.formatted(inSql), ids.toArray());
     }
