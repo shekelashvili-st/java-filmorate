@@ -1,0 +1,45 @@
+package ru.yandex.practicum.filmorate.mapper;
+
+
+import ru.yandex.practicum.filmorate.dto.FilmDto;
+import ru.yandex.practicum.filmorate.model.Film;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+public class FilmDtoMapper {
+    public static FilmDto mapToFilmDto(Film film) {
+        Set<FilmDto.idContainer> genres = new HashSet<>();
+        Long ratingId = film.getRatingId();
+        for (Long genreId : film.getGenreIds()) {
+            genres.add(new FilmDto.idContainer(genreId));
+        }
+
+        return FilmDto.builder()
+                .id(film.getId())
+                .name(film.getName())
+                .description(film.getDescription())
+                .releaseDate(film.getReleaseDate())
+                .duration(film.getDuration())
+                .genres(genres)
+                .mpa(ratingId == null ? null : new FilmDto.idContainer(ratingId))
+                .build();
+    }
+
+    public static Film mapToFilm(FilmDto filmDto) {
+        Set<FilmDto.idContainer> genres = filmDto.getGenres();
+        FilmDto.idContainer rating = filmDto.getMpa();
+        return Film.builder()
+                .id(filmDto.getId())
+                .name(filmDto.getName())
+                .description(filmDto.getDescription())
+                .releaseDate(filmDto.getReleaseDate())
+                .duration(filmDto.getDuration())
+                .ratingId(rating == null ? null : rating.getId())
+                .genreIds(genres == null ? new HashSet<>() : genres.stream()
+                        .map(FilmDto.idContainer::getId)
+                        .collect(Collectors.toSet()))
+                .build();
+    }
+}
