@@ -131,7 +131,7 @@ public class DbFilmStorage extends BaseDbStorage<Film> implements FilmStorage {
     }
 
     @Override
-    public List<Film> getMostPopular(long N) {
+    public List<Film> getMostPopular(long count) {
         ResultSetExtractor<List<Film>> rse = rs -> {
             List<Film> films = new ArrayList<>();
             Collection<Long> genreIds = null;
@@ -152,6 +152,6 @@ public class DbFilmStorage extends BaseDbStorage<Film> implements FilmStorage {
             return films;
         };
 
-        return jdbcTemplate.query(FIND_MOST_POPULAR, rse, N);
+        return jdbcTemplate.query(FIND_MOST_POPULAR, rse, count);
     }
 }

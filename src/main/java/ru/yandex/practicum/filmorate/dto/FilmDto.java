@@ -32,14 +32,14 @@ public class FilmDto {
     @Min(value = 0, message = "Film duration must be positive")
     private int duration;
 
-    private idContainer mpa;
+    private IdContainer mpa;
 
-    private Set<@NotNull idContainer> genres;
+    private Set<@NotNull IdContainer> genres;
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class idContainer {
+    public static class IdContainer {
         @NotNull(message = "MPA and genre ids must not be null")
         @Min(value = 0, message = "MPA and genre ids must be positive")
         private Long id;
