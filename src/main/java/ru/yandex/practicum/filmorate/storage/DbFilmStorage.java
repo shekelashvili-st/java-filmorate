@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,8 @@ import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.mapper.FilmMapper;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -53,9 +56,7 @@ public class DbFilmStorage extends BaseDbStorage<Film> implements FilmStorage {
         long id = insert(INSERT_FILM_QUERY,
                 film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getRatingId());
         film.setId(id);
-        for (Long genreId : film.getGenreIds()) {
-            insert(INSERT_FILM_GENRES_QUERY, id, genreId);
-        }
+        batchInsertGenre(id, film.getGenreIds().stream().toList());
         return film;
     }
 
@@ -66,9 +67,7 @@ public class DbFilmStorage extends BaseDbStorage<Film> implements FilmStorage {
                 film.getId());
         // Delete old genres and add new ones
         delete(DELETE_FILM_GENRES_QUERY, film.getId());
-        for (Long genreId : film.getGenreIds()) {
-            insert(INSERT_FILM_GENRES_QUERY, film.getId(), genreId);
-        }
+        batchInsertGenre(film.getId(), film.getGenreIds().stream().toList());
         return film;
     }
 
@@ -153,5 +152,20 @@ public class DbFilmStorage extends BaseDbStorage<Film> implements FilmStorage {
         };
 
         return jdbcTemplate.query(FIND_MOST_POPULAR, rse, count);
+    }
+
+    private void batchInsertGenre(Long filmId, List<Long> genreIds) {
+        BatchPreparedStatementSetter batchStatementSetter = new BatchPreparedStatementSetter() {
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                ps.setLong(1, filmId);
+                ps.setLong(2, genreIds.get(i));
+            }
+
+            public int getBatchSize() {
+                return genreIds.size();
+            }
+        };
+
+        jdbcTemplate.batchUpdate(INSERT_FILM_GENRES_QUERY, batchStatementSetter);
     }
 }
