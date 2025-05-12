@@ -1,72 +1,79 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.model.Friendship;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.FriendshipStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
 public class UserService {
-    private final UserStorage storage;
+
+    private final UserStorage userStorage;
+    private final FriendshipStorage friendshipStorage;
+
+    @Autowired
+    public UserService(@Qualifier("H2UserStorage") UserStorage storage,
+                       @Qualifier("H2FriendshipStorage") FriendshipStorage friendshipStorage) {
+        this.userStorage = storage;
+        this.friendshipStorage = friendshipStorage;
+    }
 
     public Collection<User> getAll() {
-        return storage.getAll();
+        return userStorage.getAll();
     }
 
     public User getById(long id) {
-        return storage.getById(id);
+        return userStorage.getById(id);
     }
 
     public User create(User user) {
-        User newUser = storage.add(user);
+        User newUser = userStorage.add(user);
         log.info("Added new user successfully: {}", newUser);
         return newUser;
     }
 
     public User update(User updatedUser) {
-        User userInStorage = storage.update(updatedUser);
+        // Getting users also serves as existence check
+        userStorage.getById(updatedUser.getId());
+        User userInStorage = userStorage.update(updatedUser);
         log.info("Updated user with id {} successfully: {}", userInStorage.getId(), userInStorage);
         return userInStorage;
     }
 
     public void addToFriends(long id1, long id2) {
-        User user1 = storage.getById(id1);
-        User user2 = storage.getById(id2);
-        user1.getFriends().add(id2);
-        user2.getFriends().add(id1);
-        log.info("Assigned users {} and {} as friends successfully", user1, user2);
+        // Getting users also serves as existence check
+        userStorage.getById(id1);
+        userStorage.getById(id2);
+        friendshipStorage.add(new Friendship(null, id1, id2));
+        log.info("Assigned users with ids {} and {} as friends successfully", id1, id2);
     }
 
     public void removeFromFriends(long id1, long id2) {
-        User user1 = storage.getById(id1);
-        User user2 = storage.getById(id2);
-        boolean user2WasUser1Friend = user1.getFriends().remove(id2);
-        boolean user1WasUser2Friend = user2.getFriends().remove(id1);
-        log.debug("User {} was friends with {} before removal: {}", user2, user1, user2WasUser1Friend);
-        log.debug("User {} was friends with {} before removal: {}", user1, user2, user1WasUser2Friend);
-        log.info("Assigned users {} and {} as non-friends successfully", user1, user2);
+        // Getting users also serves as existence check
+        User user1 = userStorage.getById(id1);
+        User user2 = userStorage.getById(id2);
+        boolean existed = friendshipStorage.deleteByFriendsId(id1, id2);
+        log.debug("User {} was friends with {} before removal: {}", user2, user1, existed);
+        log.info("Assigned users with ids {} and {} as non-friends successfully", id1, id2);
     }
 
     public Collection<User> getFriends(long id) {
-        User user1 = storage.getById(id);
-        return user1.getFriends().stream()
-                .map(storage::getById)
-                .toList();
+        // Getting users also serves as existence check
+        userStorage.getById(id);
+        Collection<Long> friendIds = friendshipStorage.getFriendIds(id);
+        return friendIds.isEmpty() ? List.of() : userStorage.getUserListByIds(friendIds);
     }
 
     public Collection<User> getCommonFriends(long id1, long id2) {
-        User user1 = storage.getById(id1);
-        User user2 = storage.getById(id2);
-        Set<Long> user1Friends = user1.getFriends();
-        return user2.getFriends().stream()
-                .filter(user1Friends::contains)
-                .map(storage::getById)
-                .toList();
+        Collection<Long> friendIds = friendshipStorage.getCommonFriendIds(id1, id2);
+        return friendIds.isEmpty() ? List.of() : userStorage.getUserListByIds(friendIds);
     }
 }

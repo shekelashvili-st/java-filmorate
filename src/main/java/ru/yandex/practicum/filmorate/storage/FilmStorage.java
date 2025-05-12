@@ -3,13 +3,10 @@ package ru.yandex.practicum.filmorate.storage;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
+import java.util.List;
 
-public interface FilmStorage {
-    Film add(Film film);
+public interface FilmStorage extends BaseStorage<Film> {
+    List<Film> getFilmListByIds(Collection<Long> ids);
 
-    Film update(Film film);
-
-    Film getById(long id);
-
-    Collection<Film> getAll();
+    List<Film> getMostPopular(long count);
 }

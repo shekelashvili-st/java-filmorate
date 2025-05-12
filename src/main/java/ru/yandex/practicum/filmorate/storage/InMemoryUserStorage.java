@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Slf4j
 @Repository
-public class InMemoryUserStorage implements UserStorage {
+public class InMemoryUserStorage implements BaseStorage<User> {
 
     private final Map<Long, User> idToUser = new HashMap<>();
     private long nextId = 0L;

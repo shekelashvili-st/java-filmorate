@@ -5,7 +5,8 @@ import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.dto.FilmDto;
+import ru.yandex.practicum.filmorate.dto.FilmGetDto;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.Collection;
@@ -19,25 +20,25 @@ public class FilmController {
     private final FilmService filmService;
 
     @GetMapping
-    public Collection<Film> getAll() {
+    public Collection<FilmGetDto> getAll() {
         log.info("Film list requested");
         return filmService.getAll();
     }
 
     @GetMapping("/{id}")
-    public Film getById(@RequestParam long id) {
+    public FilmGetDto getById(@PathVariable long id) {
         log.info("Request to get film with id {} received", id);
         return filmService.getById(id);
     }
 
     @PostMapping
-    public Film create(@RequestBody @Valid Film film) {
+    public FilmDto create(@RequestBody @Valid FilmDto film) {
         log.info("Request to add film received: {}", film);
         return filmService.create(film);
     }
 
     @PutMapping
-    public Film update(@RequestBody @Valid Film newFilm) {
+    public FilmDto update(@RequestBody @Valid FilmDto newFilm) {
         log.info("Request to update film with id {} received: {}", newFilm.getId(), newFilm);
         return filmService.update(newFilm);
     }
@@ -55,7 +56,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> getPopular(@RequestParam(defaultValue = "10") @Min(0) long count) {
+    public List<FilmGetDto> getPopular(@RequestParam(defaultValue = "10") @Min(0) long count) {
         log.info("Request to get {} films with most likes received", count);
         return filmService.getMostLiked(count);
     }
