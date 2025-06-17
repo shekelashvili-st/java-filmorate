@@ -24,7 +24,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User getById(@RequestParam long id) {
+    public User getById(@PathVariable long id) {
         log.info("Request to get user with id {} received", id);
         return userService.getById(id);
     }

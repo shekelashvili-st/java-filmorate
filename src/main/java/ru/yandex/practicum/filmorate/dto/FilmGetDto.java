@@ -1,5 +1,4 @@
-package ru.yandex.practicum.filmorate.model;
-
+package ru.yandex.practicum.filmorate.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -7,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Rating;
 import ru.yandex.practicum.filmorate.validator.DateAfter;
 
 import java.time.LocalDate;
@@ -14,7 +15,7 @@ import java.util.Set;
 
 @Data
 @Builder
-public class Film {
+public class FilmGetDto {
 
     private Long id;
 
@@ -31,7 +32,7 @@ public class Film {
     @Min(value = 0, message = "Film duration must be positive")
     private int duration;
 
-    private Long ratingId;
+    private Rating mpa;
 
-    private Set<Long> genreIds;
+    private Set<@NotNull Genre> genres;
 }
